@@ -8,7 +8,7 @@ Motor intake(13);
 Motor flywheel(12);
 Motor flywheel1(11); // reversed direction
 Controller master(E_CONTROLLER_MASTER);
-
+bool pressed = false;
 /**
  * A callback function for LLEMU's center button.
  *
@@ -110,19 +110,33 @@ void autonomous()
 	if (selector::auton == 1)
 	{								// run auton for Front Red
 		drive->moveDistance(22_in); // move 22 inches forward; float value
-		drive->turnAngle(90_deg);
-		drive->moveDistance(8_in);
+		drive->turnAngle(100_deg);
+		drive->setMaxVelocity(200);
+		drive->moveDistance(10_in);
 	}
-	// else if(selector::auton == 2){ //run auton for Back Red }
+	else if(selector::auton == 2){ //run auton for Back Red 
+	drive->moveDistance(22_in); // move 22 inches forward; float value
+		drive->turnAngle(90_deg);
+	}
 	else if (selector::auton == -1)
 	{								// run auton for Front Blue
 		drive->moveDistance(22_in); // move 22 inches forward
-		drive->turnAngle(-90_deg);
-		drive->moveDistance(8_in);
+		drive->turnAngle(-90_deg);	
+		drive->setMaxVelocity(200);
+		drive->moveDistance(10_in);
+		for (int i = 0; i < 5; i++)
+		{
+			drive->moveDistanceAsync(-3_in);
+			drive->moveDistanceAsync(3_in);
+
+		}
 	}
-	// else if(selector::auton == -2){ //run auton for Back Blue; commented out because throws error if else block is empty }
+	else if(selector::auton == -2){ //run auton for Back Blue; commented out because throws error if else block is empty 
+	drive->moveDistance(22_in); // move 22 inches forward
+		drive->turnAngle(-90_deg);
+		}
 	// else if(selector::auton == 0){ //run auton for Skills }
-	else
+	// else
 	{ // do nothing }
 	}
 }
@@ -155,23 +169,40 @@ void opcontrol()
 	elevate2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	flywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST); // lower chance of motor burning out with coasting flywheel
 	flywheel1.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	double deadzone = master.get_analog(ANALOG_LEFT_Y); // deadzone for left joystick
+	
 	while (true)
 	{
 		rightx = master.get_analog(ANALOG_LEFT_X);
 		righty = master.get_analog(ANALOG_LEFT_Y);
-		lefty = master.get_analog(ANALOG_RIGHT_Y);
+		// lefty = master.get_analog(ANALOG_RIGHT_Y)-deadzone;
 
 		// pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		//                  (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		//                  (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0); // debug functions
-
+		if (master.get_digital(DIGITAL_LEFT))	
+		{
+			pressed = true;
+		}
+		else if (master.get_digital(DIGITAL_RIGHT))
+		{
+			pressed = false;
+		}
+		if (pressed == false){
+			
 		rightwheel = righty + rightx; // arcade drivemode, reverse one motor direction so it drives normally
-		leftwheel = rightx - righty;
-		if (lefty != 0)
+		leftwheel = rightx - righty;	
+		}
+		else if (pressed == true){
+			rightwheel = -righty+rightx;
+			leftwheel = righty+rightx;
+		}
+		if (lefty != 0; lefty>=7 || lefty<=-7)
 		{
 			flywheel.move_velocity(-lefty);
 			flywheel1.move_velocity(lefty);
 		}
+		
 		if (master.get_digital(DIGITAL_UP))
 		{
 			elevate1 = 127;
