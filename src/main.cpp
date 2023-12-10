@@ -2,12 +2,12 @@
 #include "autoSelect/selection.h"
 pros::Motor rightwheel(19);
 pros::Motor leftwheel(20);
-Motor elevate1(6);
-Motor elevate2(7); // reversed direction
-Motor intake(13);
-Motor flywheel(12);
-Motor flywheel1(11); // reversed direction
-Controller master(E_CONTROLLER_MASTER);
+pros::Motor elevate1(6);
+pros::Motor elevate2(7); // reversed direction
+pros::Motor intake(13);
+pros::Motor flywheel(12);
+pros::Motor flywheel1(11); // reversed direction
+pros::Controller master(E_CONTROLLER_MASTER);
 bool pressed = false;
 pros::Imu imu_sensor(5); // temp imu init
 /**
@@ -117,7 +117,7 @@ float accurateRotation(float target){
 			leftwheel.move_velocity(0);
 		}
 		current = imu_sensor.get_rotation();
-	}
+	} 
 }
 void autonomous()
 {
