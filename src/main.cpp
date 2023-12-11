@@ -9,7 +9,8 @@ pros::Motor flywheel(12);
 pros::Motor flywheel1(11); // reversed direction
 pros::Controller master(E_CONTROLLER_MASTER);
 bool pressed = false;
-pros::Imu imu_sensor(5); // temp imu init
+// pros::Imu imu_sensor(5); // temp imu init
+int count = 0;
 /**
  * A callback function for LLEMU's center button.
  *
@@ -38,16 +39,16 @@ void initialize()
 	// pros::lcd::set_text(2, "test");
 
 	// pros::lcd::register_btn1_cb(on_center_button);
-	int time = pros::millis();
-	int iter = 0;
-	while (imu_sensor.is_calibrating())
-	{
-		printf("IMU calibrating... %d\n", iter);
-		iter += 10;
-		pros::delay(10);
-	}
-	printf("IMU is done calibrating (took %d ms)\n", iter - time);
-	pros::delay(1000);
+	// int time = pros::millis();
+	// int iter = 0;
+	// while (imu_sensor.is_calibrating())
+	// {
+	// 	printf("IMU calibrating... %d\n", iter);
+	// 	iter += 10;
+	// 	pros::delay(10);
+	// }
+	// printf("IMU is done calibrating (took %d ms)\n", iter - time);
+	// pros::delay(1000);
 	selector::init();
 }
 
@@ -97,28 +98,28 @@ void competition_initialize()
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-float accurateRotation(float target){
-	// using namespace pros;
-	imu_sensor.tare_rotation(); //IMU_PORT
-	double current = imu_sensor.get_rotation();
-	double target = target;
-	double tolerance = 0.5; //deg tolerance
-	while (current != target){
-		if (current > target-tolerance){
-			rightwheel.move_velocity(50);
-			leftwheel.move_velocity(-50);
-		}
-		else if (current < target+tolerance){
-			rightwheel.move_velocity(-50);
-			leftwheel.move_velocity(50);
-		}
-		else{
-			rightwheel.move_velocity(0);
-			leftwheel.move_velocity(0);
-		}
-		current = imu_sensor.get_rotation();
-	} 
-}
+// float accurateRotation(float target){
+// 	// using namespace pros;
+// 	imu_sensor.tare_rotation(); //IMU_PORT
+// 	double current = imu_sensor.get_rotation();
+// 	double target = target;
+// 	double tolerance = 0.5; //deg tolerance
+// 	while (current != target){
+// 		if (current > target-tolerance){
+// 			rightwheel.move_velocity(50);
+// 			leftwheel.move_velocity(-50);
+// 		}
+// 		else if (current < target+tolerance){
+// 			rightwheel.move_velocity(-50);
+// 			leftwheel.move_velocity(50);
+// 		}
+// 		else{
+// 			rightwheel.move_velocity(0);
+// 			leftwheel.move_velocity(0);
+// 		}
+// 		current = imu_sensor.get_rotation();
+// 	}
+// }
 void autonomous()
 {
 	/**
@@ -141,22 +142,30 @@ void autonomous()
 	drive->setMaxVelocity(50); // set max velocity to 50 rpm (25% power on green gearset for more accurate pid)
 
 	if (selector::auton == 1)
-	{								// run auton for Front Red
+	{ // run auton for Front Red
+		master.print(0, 0, "^ 22_in");
 		drive->moveDistance(22_in); // move 22 inches forward; float value
+		master.print(0, 0, "< 100");
 		drive->turnAngle(100_deg);
 		drive->setMaxVelocity(200);
+		master.print(0, 0, "^ 10_in");
 		drive->moveDistance(10_in);
 	}
 	else if (selector::auton == 2)
-	{								// run auton for Back Red
+	{ // run auton for Back Red
+		master.print(0, 0, "^ 22_in");
 		drive->moveDistance(22_in); // move 22 inches forward; float value
+		master.print(0, 0, "< 100");
 		drive->turnAngle(90_deg);
 	}
 	else if (selector::auton == -1)
-	{								// run auton for Front Blue
+	{ // run auton for Front Blue
+		master.print(0, 0, "^ 22_in");
 		drive->moveDistance(22_in); // move 22 inches forward
+		master.print(0, 0, "> 100");
 		drive->turnAngle(-90_deg);
 		drive->setMaxVelocity(200);
+		master.print(0, 0, "^ 10_in");
 		drive->moveDistance(10_in);
 		for (int i = 0; i < 5; i++)
 		{
@@ -165,8 +174,10 @@ void autonomous()
 		}
 	}
 	else if (selector::auton == -2)
-	{								// run auton for Back Blue; commented out because throws error if else block is empty
+	{ // run auton for Back Blue; commented out because throws error if else block is empty
+		master.print(0, 0, "^ 10_in");
 		drive->moveDistance(22_in); // move 22 inches forward
+		master.print(0, 0, "> 100");
 		drive->turnAngle(-90_deg);
 	}
 	// else if(selector::auton == 0){ //run auton for Skills }
