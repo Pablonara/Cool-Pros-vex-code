@@ -228,10 +228,12 @@ void opcontrol()
 		if (master.get_digital(DIGITAL_LEFT))
 		{
 			pressed = true;
+			master.print(0, 0, "Reverse ctrl dir   ");
 		}
 		else if (master.get_digital(DIGITAL_RIGHT))
 		{
 			pressed = false;
+			master.print(0, 0, "Normal ctrl dir    ");
 		}
 		if (pressed == false)
 		{
