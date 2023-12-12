@@ -32,7 +32,7 @@ void on_center_button() { // autonnomous selector test. TBA //added in void auto
  *
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
- */
+ */	
 void initialize()
 {
 	// pros::lcd::initialize();
@@ -297,3 +297,4 @@ void opcontrol()
 		pros::delay(20);
 	}
 }
+
