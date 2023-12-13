@@ -120,7 +120,7 @@ void competition_initialize()
 // 		current = imu_sensor.get_rotation();
 // 	}
 // }
-void autonomous()
+void autonomous() //e
 {
 	/**
 	change names in autoSelect/selection.h for gui names
@@ -148,8 +148,18 @@ void autonomous()
 		master.print(0, 0, "< 100");
 		drive->turnAngle(100_deg);
 		drive->setMaxVelocity(200);
-		master.print(0, 0, "^ 10_in");
-		drive->moveDistance(10_in);
+		master.print(0, 0, "^ 14_in");
+		drive->moveDistance(14_in);
+		// leftwheel.move_velocity(-127);
+		// rightwheel.move_velocity(127);	
+		// pros::delay(1000);
+		// leftwheel.move_velocity(0);
+		// rightwheel.move_velocity(0);
+		for (int i = 0; i < 5; i++)
+		{
+			drive->moveDistanceAsync(-3_in); 
+			drive->moveDistanceAsync(3_in);
+		}
 	}
 	else if (selector::auton == 2)
 	{ // run auton for Back Red
@@ -166,10 +176,15 @@ void autonomous()
 		drive->turnAngle(-90_deg);
 		drive->setMaxVelocity(200);
 		master.print(0, 0, "^ 10_in");
-		drive->moveDistance(10_in);
+		leftwheel.move_velocity(-127);
+		rightwheel.move_velocity(127);	
+		pros::delay(1000);
+		leftwheel.move_velocity(0);
+		rightwheel.move_velocity(0);
+		
 		for (int i = 0; i < 5; i++)
 		{
-			drive->moveDistanceAsync(-3_in);
+			drive->moveDistanceAsync(-3_in); 
 			drive->moveDistanceAsync(3_in);
 		}
 	}
