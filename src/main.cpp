@@ -148,8 +148,8 @@ void autonomous() //e
 		master.print(0, 0, "< 100");
 		drive->turnAngle(100_deg);
 		drive->setMaxVelocity(200);
-		master.print(0, 0, "^ 14_in");
-		drive->moveDistance(14_in);
+		// master.print(0, 0, "^ 14_in");
+		// drive->moveDistance(14_in);
 		// leftwheel.move_velocity(-127);
 		// rightwheel.move_velocity(127);	
 		// pros::delay(1000);
@@ -222,7 +222,7 @@ void opcontrol()
 	// stick drift calibration, runs on assumption that the stick is at 0,0 on program start. Not in use, no need currently
 	double rxcalibrate = master.get_analog(ANALOG_RIGHT_Y);
 	double rycalibrate = master.get_analog(ANALOG_RIGHT_X);
-	rightx -= rxcalibrate;
+	rightx -= rxcalibrate; 
 	righty -= rycalibrate;
 	pros::Controller master(pros::E_CONTROLLER_MASTER); // define master controller as master, since pros supports multiple controller bound to one robot
 	elevate1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);	// change brake mode to hold mode: dynamic braking with a PID loop to hold the motor in place so when you release elevate button it stayas in place
@@ -240,6 +240,14 @@ void opcontrol()
 		// pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		//                  (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		//                  (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0); // debug functions
+		double lefty = master.get_analog(ANALOG_RIGHT_Y);
+		if (lefty <= -3 || lefty >= 3) {
+			flywheel = -lefty;
+			flywheel1 = lefty;
+			master.print(1, 0, "Flw speed: %f                ", static_cast<float>(-lefty));
+			double a=flywheel1.get_actual_velocity();
+			master.print(2, 0, "%f", a);
+		}
 		if (master.get_digital(DIGITAL_LEFT))
 		{
 			pressed = true;
@@ -305,10 +313,10 @@ void opcontrol()
 			flywheel1 = -127;
 		}
 		else
-		{
-			flywheel = 0;
-			flywheel1 = 0;
-		}
+		// {
+		// 	flywheel = 0;
+		// 	flywheel1 = 0;
+		// }
 		pros::delay(20);
 	}
 }
